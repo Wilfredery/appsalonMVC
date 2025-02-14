@@ -1,0 +1,20 @@
+{
+    "name": "wilfr/appsalon-mvc",
+    "description": "Proyecto AppSalon MVC y demas",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Wilfr\\AppsalonMvc\\": "src/",
+            "MVC\\" : "./",
+            "Controllers\\" : "./controllers",
+             "Model\\" : "./models"
+        }
+    },
+    "authors": [
+        {
+            "name": "Wilfredery",
+            "email": "wilfredery30@gmail.com"
+        }
+    ],
+    "require": {}
+}
