@@ -1,25 +1,30 @@
 <?php
 
 namespace Controllers;
+use MVC\Router;
 
 class LoginControllers {
-    public static function login() {
-        echo "Lo ma duro del sistema.";
+    public static function login(Router $router) {
+        
+
+        $router->render('auth/login');
     }
 
-    public static function logout() {
+    public static function logout(Router $router) {
         echo "Era lo ma duro del sistema.";
     }
 
-    public static function olvidar() {
-        echo "Olvide la contra.";
+    public static function olvidar(Router $router) {
+        $router->render('auth/olvidar', []);
     }
 
-    public static function recuperar() {
+    public static function recuperar(Router $router) {
         echo "Se recupero la contra.";
     }
 
-    public static function crear() {
-        echo "Crear";
+    public static function crear(Router $router) {
+        $router->render('auth/crear' , [
+
+        ]);
     }
 }
