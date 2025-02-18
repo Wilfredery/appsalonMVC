@@ -19,6 +19,6 @@
 </form>
 
 <div class="acciones">
-    <a href="/crearcuenta">Crear aqui si no tienes una cuenta</a>
+    <a href="/crear">Crear aqui si no tienes una cuenta</a>
     <a href="/olvidar">Presionar aqui si olvidaste tu contra</a>
 </div>
