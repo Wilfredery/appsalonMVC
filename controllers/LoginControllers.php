@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use Classes\Email;
 use Model\Usuario;
 use MVC\Router;
 
@@ -37,6 +38,30 @@ class LoginControllers {
             $errores = $usuario->validarNewAcc();
             
             
+            //Revisar si esta vacio
+            if(empty($errores)) {
+                
+                // Verificar que el usuario no este registrado
+
+                $resultado = $usuario->existeUsuario();
+
+                if($resultado->num_rows) {
+                    $errores = Usuario::geterrores();
+
+                } else {
+                    //Hashear el password
+                    $usuario->hashPassword();
+                    debuguear($usuario);
+                    
+
+                    // Generar un token unico
+                    $usuario->crearToken();
+
+                    //Enviar el email
+                    $email = new Email($usuario->nombre, $usuario->email, $usuario->token);
+                    
+                }
+            }
         }
         
         $router->render('auth/crear' , [

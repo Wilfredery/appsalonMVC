@@ -36,26 +36,49 @@ class Usuario extends ActiveRecord {
 
 
         if(!$this->nombre) {
-            self::$errores['error'][] = 'El nombre del cliente es obligatorio.';
+            self::$errores['error'][] = 'El nombre es obligatorio.';
         }
 
         if(!$this->apellido) {
-            self::$errores['error'][] = 'El apellido del cliente es obligatorio.';
+            self::$errores['error'][] = 'El apellido es obligatorio.';
         }
 
         if(!$this->email) {
-            self::$errores['error'][] = 'El correo electronico del cliente es obligatorio.';
+            self::$errores['error'][] = 'El correo electronico es obligatorio.';
         }
 
-        if(!$this->email) {
-            self::$errores['error'][] = 'El email del cliente es obligatorio.';
+        if(!$this->password) {
+            self::$errores['error'][] = 'El password es obligatorio.';
+        }
+        if(strlen($this->password) < 6) {
+            self::$errores['error'][] = 'El password debe de contener al menos 6 caracteres de letras.';
         }
 
         if(!$this->telefono) {
-            self::$errores['error'][] = 'El telefono del cliente es obligatorio.';
+            self::$errores['error'][] = 'El telefono es obligatorio.';
         }
 
         return self::$errores;
     }
 
+    //Revisa si el usuario ya existe.
+    public function existeUsuario() {
+        $query = "SELECT * FROM ".  self::$tabla . " WHERE email = '". $this->email. "' LIMIT 1";
+        
+        $resultado = self::$db->query($query);
+
+        //Si ya existe el usuario. El num_rows confirma si hay o no hay datos almacenados.
+        if($resultado->num_rows) {
+            self::$errores['error'][] = 'Ya existe el usuario.';
+        }
+        return $resultado;
+    }
+
+    public function hashPassword() {
+        $this->password = password_hash($this->password, PASSWORD_BCRYPT);
+    }
+
+    public function crearToken() {
+        $this->token = uniqid();
+    }
 }
