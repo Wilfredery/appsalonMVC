@@ -51,7 +51,7 @@ class LoginControllers {
                 } else {
                     //Hashear el password
                     $usuario->hashPassword();
-                    debuguear($usuario);
+                    
                     
 
                     // Generar un token unico
@@ -59,7 +59,14 @@ class LoginControllers {
 
                     //Enviar el email
                     $email = new Email($usuario->nombre, $usuario->email, $usuario->token);
-                    
+                    $email->confirmarToken();
+
+                    //Creando el usuario
+                    $resultadp = $usuario->guardar();
+
+                    if($resultado) {
+                        header('Location: /mensaje');
+                    }
                 }
             }
         }
@@ -68,5 +75,9 @@ class LoginControllers {
             'usuario' => $usuario,
             'errores' => $errores
         ]);
+    }
+
+    public static function mensaje(Router $router) {
+        $router->render('auth/mensaje');
     }
 }

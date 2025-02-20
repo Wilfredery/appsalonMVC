@@ -25,8 +25,8 @@ class Usuario extends ActiveRecord {
         $this->apellido = $args['apellido'] ?? '';
         $this->email = $args['email'] ?? '';
         $this->telefono = $args['telefono'] ?? '';
-        $this->administrador = $args['administrador'] ?? null;
-        $this->confirmado = $args['confirmado'] ?? null;
+        $this->administrador = $args['administrador'] ?? '0';
+        $this->confirmado = $args['confirmado'] ?? '0';
         $this->token = $args['token'] ?? '';
         $this->password = $args['password'] ?? '';
     }
