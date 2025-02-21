@@ -1,6 +1,11 @@
 <h1 class="nombre-pagina">Login</h1>
 <p class="descripcion-pagina">Iniciar sesion con tus datos</p>
 
+<?php 
+
+    include_once __DIR__ . '/../templates/errores.php';
+?>
+
 <form action="/" class="formulario" method="POST">
 
     <div class="campo">

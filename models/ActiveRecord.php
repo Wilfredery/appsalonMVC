@@ -15,7 +15,7 @@ class ActiveRecord {
         self::$db = $database;
     }
 
-    public static function setAlerta($tipo, $mensaje) {
+    public static function seterrores($tipo, $mensaje) {
         static::$errores[$tipo][] = $mensaje;
     }
 
@@ -115,6 +115,13 @@ class ActiveRecord {
         $resultado = self::consultarSQL($query);
         return array_shift( $resultado ) ;
     }
+
+    public static function where($columnas, $valor) {
+        $query = "SELECT * FROM " . static::$tabla  ." WHERE $columnas = '$valor'";
+        $resultado = self::consultarSQL($query);
+        return array_shift( $resultado ) ;
+    }
+
 
     // Obtener Registros con cierta cantidad
     public static function get($limite) {

@@ -9,8 +9,18 @@ use MVC\Router;
 class LoginControllers {
     public static function login(Router $router) {
         
+        $errores =[];
 
-        $router->render('auth/login');
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            
+            $auth = new Usuario($_POST);
+            $errores = $auth->validarLogin();
+
+        }
+
+        $router->render('auth/login' , [
+            "errores" => $errores
+        ]);
     }
 
     public static function logout(Router $router) {
@@ -79,5 +89,33 @@ class LoginControllers {
 
     public static function mensaje(Router $router) {
         $router->render('auth/mensaje');
+    }
+
+    public static function confirmar(Router $router) {
+
+        $errores = [];
+
+        $token = s($_GET['token']); //Llama al token que tenemos almacenado en la base de datos.
+
+        $usuario = Usuario::where('token', $token);
+
+        if(empty($usuario)) {
+            //Mostrar mensaje de eror.
+            Usuario::seterrores('error', 'Token no valido');
+        } else {
+            //Modificar a usuario confirmado.
+            $usuario->confirmado = '1';
+            $usuario->token = '';
+            $usuario->guardar();
+            $usuario->seterrores('exito', 'Cuenta comprobada correctamente');
+        }
+        //Obtener alertas
+        $errores = Usuario::geterrores();
+
+
+        $router->render('auth/confirmar', [
+            'errores' => $errores
+
+        ]);
     }
 }
