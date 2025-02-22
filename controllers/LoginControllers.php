@@ -16,7 +16,40 @@ class LoginControllers {
             $auth = new Usuario($_POST);
             $errores = $auth->validarLogin();
 
+            //Si no hay un usuario
+            if(empty($errores)) {
+                //Comparamos columnas. Confirma si los datos estan almacenados o no.
+                $usuario = Usuario::where('email', $auth->email);
+
+               if($usuario) {
+                //Verifica el password
+                if($usuario->validarPassVerif($auth->password)) {
+                    //Auth el usuario
+                    session_start();
+
+                    $_SESSION['id'] = $usuario->$id;
+                    $_SESSION['nombre'] = $usuario->nombre . " " . $usuario->apellido;
+                    $_SESSION['email'] = $usuario->email;
+                    $_SESSION['login'] = true;
+
+                    //Redireccionamiento si es admin o cliente.
+                    if($usuario->admin === 1) {
+
+                        $_SESSION['admin'] = $usuario->admin ?? null;
+                        header('Location: /admin');
+                    } else {
+                        header('Location: /cita');
+                    }
+                    debuguear($_SESSION);
+                }
+
+               } else {
+                    Usuario::seterrores('error', 'Usuario no encontrado');
+               }
+            }
         }
+
+        $errores = Usuario::geterrores();
 
         $router->render('auth/login' , [
             "errores" => $errores

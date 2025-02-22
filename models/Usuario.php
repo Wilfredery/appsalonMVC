@@ -93,4 +93,16 @@ class Usuario extends ActiveRecord {
     public function crearToken() {
         $this->token = uniqid();
     }
+
+    public function validarPassVerif($password) {
+        
+        //Ayuda a validar el passowrd.
+        $resultado = password_verify($password, $this->password);
+
+        if(!$resultado || !$this->confirmado) {
+            self::$errores['error'][] = 'Password incorrecto o tu cuenta no esta confirmada.';
+        } else {
+            return true;
+        }
+    }
 }
