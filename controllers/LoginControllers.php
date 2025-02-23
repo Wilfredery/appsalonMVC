@@ -2,9 +2,9 @@
 
 namespace Controllers;
 
+use MVC\Router;
 use Classes\Email;
 use Model\Usuario;
-use MVC\Router;
 
 class LoginControllers {
     public static function login(Router $router) {
@@ -27,20 +27,20 @@ class LoginControllers {
                     //Auth el usuario
                     session_start();
 
-                    $_SESSION['id'] = $usuario->$id;
+                    $_SESSION['id'] = $usuario->id;
                     $_SESSION['nombre'] = $usuario->nombre . " " . $usuario->apellido;
                     $_SESSION['email'] = $usuario->email;
                     $_SESSION['login'] = true;
 
                     //Redireccionamiento si es admin o cliente.
-                    if($usuario->admin === 1) {
+                    if($usuario->administrador === 1) {
 
-                        $_SESSION['admin'] = $usuario->admin ?? null;
+                        $_SESSION['administrador'] = $usuario->administrador ?? null;
                         header('Location: /admin');
                     } else {
                         header('Location: /cita');
                     }
-                    debuguear($_SESSION);
+                    
                 }
 
                } else {
@@ -60,12 +60,95 @@ class LoginControllers {
         echo "Era lo ma duro del sistema.";
     }
 
+    //Esto se dedica a la validacion y confirmacion del ususario
     public static function olvidar(Router $router) {
-        $router->render('auth/olvidar', []);
+
+        $errores = [];
+
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $auth = new Usuario($_POST);
+            $errores = $auth->validarEmail();
+            
+
+            if(empty($errores)) {
+
+                //Recordando que elwhere se enfoca en comparar valores de la db con la que se esta escribiendo.
+                $usuario = Usuario::where('email', $auth->email);
+
+                if($usuario && $usuario->confirmado === "1") {
+                    //Generar un toquen para la contrase;a olvidada.
+
+                    $usuario->crearToken();
+                    $usuario->guardar();
+
+                    //Eniar al email
+                    $email = new Email($usuario->nombre, $usuario->email, $usuario->token);
+                    $email->enviarInst();
+
+                    //Alerta de exito
+                    Usuario::seterrores('exito', 'Revisa tu email');   
+
+                } else {
+                    Usuario::seterrores('error', 'El usuario no existe o no esta confirmado');
+
+                }
+            }
+        }
+        
+        $errores = Usuario::geterrores();
+
+        $router->render('auth/olvidar', [
+            'errores' => $errores
+        ]);
     }
 
     public static function recuperar(Router $router) {
-        echo "Se recupero la contra.";
+        
+        $errores = [];
+
+        //Variable para sacar al usuario del recuperar.php cuando el token no es valido/no esta almacenado en la base de datos.
+        $noTokenValido = false;
+
+        $token = s($_GET['token']);
+
+        //Buscar usuario por su token
+        $usuario = Usuario::where('token', $token);
+
+        if(empty($usuario)) {
+            Usuario::seterrores('error', 'Token no valido');
+            $noTokenValido = true;
+        }
+
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            //Leer el nuevo password y guardarlo.
+
+            $password = new Usuario($_POST);
+            $errores = $password->validarPassword();
+
+            if(empty($errores)) {
+                //El de abajo limpia el passsword hasheado anteriormente para guardar el nuevo.
+                $usuario->password = null;
+            
+                //Agregando el nuevo passwoerd
+                $usuario->password = $password->password;
+                $usuario->hashPassword();
+                $usuario->token = null;
+
+                $resultado = $usuario->guardar();
+
+                if($resultado) {
+                    header('Location: /');
+                }
+            }
+        }
+
+        $errores = Usuario::geterrores();
+
+        $router->render('auth/recuperar', [
+            'errores' => $errores,
+            'noTokenValido' => $noTokenValido
+        ]);
     }
 
     public static function crear(Router $router) {
@@ -95,8 +178,6 @@ class LoginControllers {
                     //Hashear el password
                     $usuario->hashPassword();
                     
-                    
-
                     // Generar un token unico
                     $usuario->crearToken();
 
@@ -105,7 +186,7 @@ class LoginControllers {
                     $email->confirmarToken();
 
                     //Creando el usuario
-                    $resultadp = $usuario->guardar();
+                    $resultado = $usuario->guardar();
 
                     if($resultado) {
                         header('Location: /mensaje');

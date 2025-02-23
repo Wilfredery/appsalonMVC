@@ -73,6 +73,16 @@ class Usuario extends ActiveRecord {
         return self::$errores;
     }
 
+    public function validarEmail() {
+
+        if(!$this->email) {
+            self::$errores['error'][] = 'El email es obligatorio.';
+        }
+
+        
+        return self::$errores;
+    }
+
     //Revisa si el usuario ya existe.
     public function existeUsuario() {
         $query = "SELECT * FROM ".  self::$tabla . " WHERE email = '". $this->email. "' LIMIT 1";
@@ -104,5 +114,17 @@ class Usuario extends ActiveRecord {
         } else {
             return true;
         }
+    }
+
+    public function validarPassword() {
+        if(!$this->password) {
+            self::$errores['error'][] = 'El password es obligatorio';
+        }
+
+        if(strlen($this->password) < 6) {
+            self::$errores['error'][] = 'El password debe de contener al menos 6 caracteres de letras.';
+        }
+        
+        return self::$errores;
     }
 }
