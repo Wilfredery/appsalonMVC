@@ -5,7 +5,7 @@
 
     <nav class="tabs">
 
-        <button class="actual" type="button" data-paso='1'>Servicios</button>
+        <button type="button" class="actual"  data-paso='1'>Servicios</button>
         <button type="button" data-paso='2'>Información de cita</button>
         <button type="button" data-paso='3'>Resumen</button>
     </nav>
@@ -52,7 +52,12 @@
         <button id="siguiente" class="boton">Siguiente &raquo;</button>
     </div>
 
-        
-
 </div>
+
+<?php
+            $script = '
+
+                <script src="build/js/app.js"></script>
+            ';
+        ?>
 
