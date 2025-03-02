@@ -19,6 +19,9 @@ function iniciarApp() {
     pagAnterior();
 
     consultarAPI(); //Consulta la API en el BackEnd de PHP
+
+    nombreCliente(); //Añade el nombre del cliente al objeto de cita.
+    selecFeha(); //Agrega la fecha en el objeto de cita.
 }
 
 function mostrarSeccion() {
@@ -119,6 +122,7 @@ async function consultarAPI() {
 }
     
 function mostrarSev(servicios) {
+
     servicios.forEach( servicio => {
 
         //Extraccion de valores.
@@ -151,9 +155,104 @@ function selecServ(servicio) {
     const {id} = servicio;
     //Llama desde el objeto cita el arreglo de servicios[]
     const {servicios} = cita;
-    //El triple punto es que hace una copia de ese arreglo de servicios y se le agrega al nuevo servicio.
-    cita.servicios = [...servicios, servicio];
-
+    
+    //Identificar el elemento al que se daclick.
     const divServ = document.querySelector(`[data-id-servicio="${id}"]`);
-    divServ.classList.add('seleccionado');
+
+    //Comprobar si un servicio ya fue agregado o quitado
+    if(servicios.some(agregado => agregado.id === id)) {
+        //Si ya esta agregado, se elimina
+        cita.servicios = servicios.filter( agregado => agregado.id !== id);
+        divServ.classList.remove('seleccionado');
+
+    } else {
+        //Si no esta agregado, se agrega.
+
+        //El triple punto es que hace una copia de ese arreglo de servicios y se le agrega al nuevo servicio.
+        cita.servicios = [...servicios, servicio];
+        divServ.classList.add('seleccionado');
+    }
 }
+
+function nombreCliente() {
+    //Lo que esta guardado en el input de nombre se guarda en el const nombre
+    const nombre = document.querySelector('#nombre').value;
+    //Del constnombre se guarda en este objeto.
+    cita.nombre = nombre; 
+
+}
+
+function selecFeha() {
+    const inputFecha = document.querySelector('#fecha');
+    inputFecha.addEventListener('input', function(evento) {
+
+        //Permitiendo que esto vaya del domingo = 0 hasta el sabado = 6;
+        const dia = new Date(evento.target.value).getUTCDay();
+        
+        //Siendo sabado 6 y domingo 0
+        if( [6,0].includes(dia) ) {
+            evento.target.value = '';
+            //Sabado y domingo no abre.
+           mostrarAlert('error', 'Fines de semana no es laborable.');
+            
+        } else {
+            //Cita disponible de lunes a viernes.
+            console.log('cita disponibles');
+        }
+    });
+}
+
+function mostrarAlert(tipo, mensaje) {
+
+    //Si ya existe una alerta pues no permita que se haga mas alerta de la misma.
+    const alertaPrevia = document.querySelector('.alerta');
+    if(alertaPrevia) return;
+
+    //Scripting para crear la alerta.
+    const alerta = document.createElement('DIV');
+    alerta.textContent = mensaje;
+    alerta.classList.add('alerta');
+    alerta.classList.add(tipo);
+
+    const form = document.querySelector('.formulario');
+    form.appendChild(alerta);
+
+    //Duracion de la alerta mostrada
+    setTimeout(() => {
+        alerta.remove();
+    }, 3000);
+}
+
+// Para los dias feriados, arreglarlo para este pasoInit
+// function seleccionarFecha(){
+    
+//     const inputFecha = document.querySelector("#fecha");
+//     inputFecha.addEventListener("input", function(e){
+ 
+//         const dia = new Date(e.target.value).getUTCDay();
+//         const diaFestivo = new Date(e.target.value).getUTCDate();
+//         const mes = new Date(e.target.value).getUTCMonth() +1;
+  
+ 
+//         if([6,0].includes(dia)){
+//             e.target.value= "";
+//             mostrarAlerta("Fines de semana no permitido", "error", "#paso-2 p");
+//         }else if((1 === diaFestivo & 1 === mes) ||
+//                  ([4,5].includes(dia) & diaFestivo<10 & 4 === mes) ||
+//                  (1 === diaFestivo & 5 === mes) ||
+//                  ((7 === diaFestivo || 29 === diaFestivo) & 6 === mes) ||
+//                  ((28 === diaFestivo || 29 === diaFestivo) & 7 === mes) ||
+//                  ((6 === diaFestivo || 30 === diaFestivo) & 8 === mes) ||
+//                  (8 === diaFestivo & 10 === mes) ||
+//                  (1 === diaFestivo & 11 === mes) ||
+//                  ((8 === diaFestivo || 9 === diaFestivo || 25 === diaFestivo) & 12 === mes)
+         
+//         ){
+//             e.target.value= "";
+//             mostrarAlerta("Feriados no hay atencion", "error", "#paso-2 p");
+//         }
+//         else{
+//             cita.fecha = e.target.value;
+//         }
+//     })
+// }

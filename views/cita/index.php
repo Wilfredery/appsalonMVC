@@ -4,7 +4,6 @@
 <div id="app">
 
     <nav class="tabs">
-
         <button type="button" class="actual"  data-paso='1'>Servicios</button>
         <button type="button" data-paso='2'>Información de cita</button>
         <button type="button" data-paso='3'>Resumen</button>
@@ -29,8 +28,9 @@
 
             <div class="campo">
                 <label for="fecha">Fecha: </label>
-                <input type="date" id="fecha">
+                <input type="date" id="fecha" min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>">
             </div>
+
 
 
             <div class="campo">
