@@ -21,7 +21,10 @@ function iniciarApp() {
     consultarAPI(); //Consulta la API en el BackEnd de PHP
 
     nombreCliente(); //Añade el nombre del cliente al objeto de cita.
-    selecFeha(); //Agrega la fecha en el objeto de cita.
+    selecFecha(); //Agrega la fecha en el objeto de cita.
+    SelecHora(); //Agregar la hora al objeto cita.
+
+    mostrarResumen(); //Se mostrara el resumen de la cita.
 }
 
 function mostrarSeccion() {
@@ -59,6 +62,7 @@ function tabs() {
 
             mostrarSeccion();
             botonesPag();
+
         });
     });
 }
@@ -76,6 +80,8 @@ function botonesPag() {
         pagAnt.classList.remove('ocultar');
         pagSig.classList.add('ocultar');
 
+        mostrarResumen();
+        
     } else {
         pagAnt.classList.remove('ocultar');
         pagSig.classList.remove('ocultar');
@@ -90,7 +96,7 @@ function pagAnterior() {
     pagAnt.addEventListener('click' , function() {
 
         if(paso <= pasoInit) return;
-        paso--;;
+        paso--;
         
         botonesPag();
     })
@@ -101,7 +107,7 @@ function pagSiguiente() {
     pagSig.addEventListener('click' , function() {
 
         if(paso >= pasoFin) return;
-        paso++;;
+        paso++;
         
         botonesPag();
 
@@ -182,7 +188,7 @@ function nombreCliente() {
 
 }
 
-function selecFeha() {
+function selecFecha() {
     const inputFecha = document.querySelector('#fecha');
     inputFecha.addEventListener('input', function(evento) {
 
@@ -193,20 +199,107 @@ function selecFeha() {
         if( [6,0].includes(dia) ) {
             evento.target.value = '';
             //Sabado y domingo no abre.
-           mostrarAlert('error', 'Fines de semana no es laborable.');
+           mostrarAlert('error', 'Fines de semana no es laborable.' , '.formulario');
             
         } else {
+            cita.fecha = evento.target.value;
             //Cita disponible de lunes a viernes.
-            console.log('cita disponibles');
         }
     });
 }
 
-function mostrarAlert(tipo, mensaje) {
+function SelecHora() {
+    
+    const inputHora = document.querySelector('#hora');
+    inputHora.addEventListener('input', function(evento) {
+        
+        //El evento.target.value te muestra en consola la hora que fue seleccionada
+        const horaCita = evento.target.value;
 
+        const hora = horaCita.split(":")[0]; //Split sirve para separar. MANDATORY> DOBEL COMILLAS 
+        
+        if(hora < 10 || hora > 18) {
+            evento.target.value = '';
+            mostrarAlert('error', "LA HORA SELECCIONADA NO ES VALIDA", '.formulario');
+
+        } else {
+            cita.hora = evento.target.value;
+        }
+    });
+}
+
+function mostrarResumen() {
+    const resumen = document.querySelector('.contenido-resumen');
+
+    //Limpiar el contenido del resumen
+    while(resumen.firstChild) {
+        resumen.removeChild(resumen.firstChild);
+    }
+
+
+    //El Objwct.values() muestra si en el objeto esta vacio o tiene valores.
+    //PARA VALIDAR UN OBJETO> OBJECT.VALUES()
+    //PARA VALIDAR UN ARREGLO .LENGTH
+    if(Object.values(cita).includes('') || cita.servicios.length === 0) {
+        
+        mostrarAlert('error', 'FALTA DATOS DE SERVICIO, FECHA U HORA', '.contenido-resumen', false);
+
+        return;
+    } 
+    
+    //Heading para servicios en resumen
+    const headingServ = document.createElement('H3');
+    headingServ.textContent = 'Resumen de servicios';
+    resumen.appendChild(headingServ);
+
+    //Iterando y mostrando en los servicios del resumen.
+    cita.servicios.forEach(servicio => {
+
+        const { id, precio, nombre } = servicio;
+
+        const contenedorServ = document.createElement('DIV');
+        contenedorServ.classList.add('contenedor-servicio');
+
+        const textServ = document.createElement('P');
+        textServ.textContent = nombre;
+
+        const precioServ = document.createElement('P');
+        precioServ.innerHTML = `<span>Precio: </span>$${precio}`;
+
+        contenedorServ.append(textServ);
+        contenedorServ.append(precioServ);
+
+        resumen.appendChild(contenedorServ);
+    });
+
+    //Resumen de cita para servicios en resumen
+     const headingCita = document.createElement('H3');
+    headingCita.textContent = 'Resumen de cita';
+    resumen.appendChild(headingCita);
+
+    //Formatear el div de resumen
+    const {nombre,fecha,hora, servicios} = cita;
+
+    const nombreCliente = document.createElement('P');
+    nombreCliente.innerHTML = `<span>Nombre: </span> ${nombre}`;
+    
+    const fechaCliente = document.createElement('P');
+    fechaCliente.innerHTML = `<span>Fecha: </span> ${fecha}`;
+    
+    const horaCliente = document.createElement('P');
+    horaCliente.innerHTML = `<span>Hora: </span> ${hora}`;
+
+    resumen.appendChild(nombreCliente);
+    resumen.appendChild(fechaCliente);
+    resumen.appendChild(horaCliente);
+}
+
+function mostrarAlert(tipo, mensaje, elemento, desaparece = true) {
     //Si ya existe una alerta pues no permita que se haga mas alerta de la misma.
     const alertaPrevia = document.querySelector('.alerta');
-    if(alertaPrevia) return;
+    if(alertaPrevia) {
+        alertaPrevia.remove();
+    }
 
     //Scripting para crear la alerta.
     const alerta = document.createElement('DIV');
@@ -214,13 +307,16 @@ function mostrarAlert(tipo, mensaje) {
     alerta.classList.add('alerta');
     alerta.classList.add(tipo);
 
-    const form = document.querySelector('.formulario');
-    form.appendChild(alerta);
+    const referencia = document.querySelector(elemento);
+    referencia.appendChild(alerta);
 
-    //Duracion de la alerta mostrada
-    setTimeout(() => {
-        alerta.remove();
-    }, 3000);
+    //Si la vaina e true, desaparece y si es false se queda ahi
+    if(desaparece) {
+        //Duracion de la alerta mostrada
+        setTimeout(() => {
+            alerta.remove();
+        }, 3000);
+    }
 }
 
 // Para los dias feriados, arreglarlo para este pasoInit
