@@ -282,16 +282,46 @@ function mostrarResumen() {
 
     const nombreCliente = document.createElement('P');
     nombreCliente.innerHTML = `<span>Nombre: </span> ${nombre}`;
+
+    //FORMATEAR LA FECHA EN SPANISH
+    const fechaObj = new Date(fecha); //Recuerda al usar NEW DATE te resta 1 o 2 dias.
+    const mes = fechaObj.getMonth();
+
+    //Getdate dia del mes getday dia de la semana. +2 por utilizarlo 2 veces.
+    const dia = fechaObj.getDate() + 2; 
+    const year = fechaObj.getFullYear();
+
+    const fechaUTC = new Date( Date.UTC(year,mes,dia));
+    //Palabra del dia de la semana, year numero y palabra del mes y dia numerico.
+    const opciones = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}; 
+    const fecharFormat = fechaUTC.toLocaleDateString('es-ES', opciones); //Dia/mes/year
+    
     
     const fechaCliente = document.createElement('P');
-    fechaCliente.innerHTML = `<span>Fecha: </span> ${fecha}`;
-    
+    fechaCliente.innerHTML = `<span>Fecha: </span> ${fecharFormat}`;
+
     const horaCliente = document.createElement('P');
     horaCliente.innerHTML = `<span>Hora: </span> ${hora}`;
+
+    //Boton para crear una cita.
+    const botonReservar = document.createElement('BUTTON');
+    botonReservar.classList.add('boton');
+    botonReservar.textContent = 'Reservar Cita';
+    botonReservar.onclick = reservarCita;
 
     resumen.appendChild(nombreCliente);
     resumen.appendChild(fechaCliente);
     resumen.appendChild(horaCliente);
+
+    resumen.appendChild(botonReservar);
+}
+
+function reservarCita() {
+    const datos = new FormData();
+    datos.append('nombre', 'Juan');
+
+    //Muy util
+    //console.log([...datos]);
 }
 
 function mostrarAlert(tipo, mensaje, elemento, desaparece = true) {

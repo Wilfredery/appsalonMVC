@@ -8,4 +8,13 @@ class ApiControllers {
         $servicios = Servicio::all(); 
         echo json_encode($servicios);
     }
+
+    public static function guardar() {
+        $respuesta = [
+            'mensaje' => 'Todo waos'
+        ];
+
+        echo json_encode($respuesta);
+    }
 }
+
