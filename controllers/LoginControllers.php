@@ -57,7 +57,9 @@ class LoginControllers {
     }
 
     public static function logout(Router $router) {
-        echo "Era lo ma duro del sistema.";
+        session_start();
+        $_SESSION = []; //Guarda la info del usuario en un arreglo.
+        header('Location: /');
     }
 
     //Esto se dedica a la validacion y confirmacion del ususario

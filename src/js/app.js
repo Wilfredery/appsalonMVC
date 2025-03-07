@@ -1,6 +1,7 @@
 let paso = 1;
 
 const cita = {
+    id: '',
     nombre: '',
     fecha: '',
     hora: '',
@@ -20,6 +21,7 @@ function iniciarApp() {
 
     consultarAPI(); //Consulta la API en el BackEnd de PHP
 
+    idClient(); 
     nombreCliente(); //Añade el nombre del cliente al objeto de cita.
     selecFecha(); //Agrega la fecha en el objeto de cita.
     SelecHora(); //Agregar la hora al objeto cita.
@@ -180,6 +182,14 @@ function selecServ(servicio) {
     }
 }
 
+function idClient() {
+    //Lo que esta guardado en el input de nombre se guarda en el const nombre
+    const id = document.querySelector('#id').value;
+    //Del constnombre se guarda en este objeto.
+    cita.id = id; 
+}
+
+
 function nombreCliente() {
     //Lo que esta guardado en el input de nombre se guarda en el const nombre
     const nombre = document.querySelector('#nombre').value;
@@ -316,12 +326,53 @@ function mostrarResumen() {
     resumen.appendChild(botonReservar);
 }
 
-function reservarCita() {
-    const datos = new FormData();
-    datos.append('nombre', 'Juan');
+async function reservarCita() {
 
-    //Muy util
-    //console.log([...datos]);
+    const {id, fecha, hora, servicios} = cita;
+
+    //Recuerda que el map itera cuando las coincidencia son iguales para almacenar.
+    const idServicio = servicios.map(servicio => servicio.id);
+    
+    const datos = new FormData();
+    
+    //cON ESTO PERMITE ACCEDER CON LA VARIABLE POST
+    datos.append('usuarioid', id);
+    //datos.append('nombre', nombre);
+    datos.append('fecha', fecha);
+    datos.append('hora', hora);
+    datos.append('servicios', idServicio);
+
+    // console.log([...datos]);
+
+    try {
+
+    //Peticion hacia la api
+    const url ='http://localhost:3000/api/citas';
+    const respuesta = await fetch(url, {
+        method: 'POST',
+        body: datos
+    });
+
+    const resultado = await respuesta.json();
+    //console.log(resultado.resultado); devuelve true
+        if(resultado.resultado) {
+            Swal.fire({
+                icon: "success",
+                title: "Cita creada",
+                text: "Tu cita fue creada de manera exitosa.",
+            }).then( () => {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 3000);
+            });
+        }
+    }catch (error) {
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Hubo un error al guardar la cita. Por favor, intentarlo luego y disculpe por los inconvenientes.!",
+        });
+    }
 }
 
 function mostrarAlert(tipo, mensaje, elemento, desaparece = true) {

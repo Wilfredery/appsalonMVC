@@ -1,6 +1,8 @@
 <?php
 namespace Controllers;
 
+use Model\Cita;
+use Model\CitasServicios;
 use Model\Servicio;
 
 class ApiControllers {
@@ -10,11 +12,31 @@ class ApiControllers {
     }
 
     public static function guardar() {
-        $respuesta = [
-            'mensaje' => 'Todo waos'
-        ];
+        //Almacena la cita y devuelve el id
+        $cita = new Cita($_POST);
+        $resultado = $cita->guardar();
+        $id = $resultado['id']; //Esto viene de la base de datos asi que no hay necesidad de escaparlo.
 
-        echo json_encode($respuesta);
+
+        //Almacena los servicios con el id de la cita
+        $idServicios = explode(",", $_POST['servicios']); //Esto sirve para conv en arreglo y que separe con una coma(,) y el segundo parametro es cual quieres que se bregue
+        
+        foreach ($idServicios as $idservicio) {
+            $args = [
+                'citaid' => $id,
+                'serviciosid' => $idservicio
+            ];
+
+            $citaServicio = new CitasServicios($args);
+            $citaServicio->guardar();
+        }
+
+        //  Retorna una respuesta
+        // $resultados = [
+        //     'resultado' => $resultado
+        // ];
+
+        echo json_encode(['resultado' => $resultado]);
     }
 }
 
