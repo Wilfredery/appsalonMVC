@@ -33,7 +33,7 @@ class LoginControllers {
                     $_SESSION['login'] = true;
 
                     //Redireccionamiento si es admin o cliente.
-                    if($usuario->administrador === 1) {
+                    if($usuario->administrador === "1") {
 
                         $_SESSION['administrador'] = $usuario->administrador ?? null;
                         header('Location: /admin');

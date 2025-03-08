@@ -1,11 +1,9 @@
 <h1 class="nombre-pagina">Crear nueva cita</h1>
 <p class="descripcion-pagina">Elige los servicios y procede a colocar tus datos</p>
 
-<div class="barra">
-    <p>Hola: <?php echo $nombre ?? ''; ?> </p>
-
-    <a class="boton" href="/logout">Cerrar Sesion</a>
-</div>
+<?php 
+    include_once __DIR__ . '/../templates/barra.php';
+?>
 
 <div id="app">
 
