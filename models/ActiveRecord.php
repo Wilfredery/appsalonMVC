@@ -122,12 +122,17 @@ class ActiveRecord {
         return array_shift( $resultado ) ;
     }
 
+    //Consulta plana de SQL(Utilizar cuando los metodos del modelo no son suficientes).
+        public static function SQL($consulta) {
+        $resultado = self::consultarSQL($consulta);
+        return $resultado;
+    }
 
     // Obtener Registros con cierta cantidad
     public static function get($limite) {
         $query = "SELECT * FROM " . static::$tabla . " LIMIT {$limite}";
         $resultado = self::consultarSQL($query);
-        return array_shift( $resultado ) ;
+        return array_shift($resultado); //Recordado que el array shift saca el primer elemento de un arreglo.
     }
 
     // crea un nuevo registro

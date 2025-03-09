@@ -14,6 +14,26 @@
     </form>
 </div>
 
-<div id="cita-admin">
+<div id="citas-admin">
+    <ul class="citas">
 
+    <?php
+    $idCita = 0;
+
+    foreach($citas as $cita) { 
+        if($idCita !== $cita->id) {  
+            
+    ?>
+        <li>
+            <p>ID: <span><?php echo $cita->id; ?></span></p>
+            <p>Hora: <span><?php echo $cita->hora; ?></span></p>
+            <p>Cliente: <span><?php echo $cita->cliente; ?></span></p>
+            <p>email cliente: <span><?php echo $cita->email; ?></span></p>
+            <p>telefono cliente: <span><?php echo $cita->telefono; ?></span></p>
+            <h3>Servicios seleccionados</h3>
+            <?php $idCita = $cita->id; } //fin if ?>
+            <p class="servicio"><?php echo $cita->servicio; ?></p>
+    <?php } //fin foreach ?>
+    
+    </ul>
 </div>
