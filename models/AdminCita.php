@@ -4,7 +4,7 @@ namespace Model;
 
 class AdminCita extends ActiveRecord {
     protected static $tabla = 'citasservicios';
-    protected static $columnasDB = ['id', 'hora', 'cliente', 'email', 'telefono', 'servicio'];
+    protected static $columnasDB = ['id', 'hora', 'cliente', 'email', 'telefono', 'servicio', 'precio'];
 
     public $id;
     public $hora;
@@ -12,6 +12,7 @@ class AdminCita extends ActiveRecord {
     public $email;
     public $telefono;
     public $servicio;
+    public $precio;
 
     public function __construct($args=[]) {
         
@@ -21,5 +22,6 @@ class AdminCita extends ActiveRecord {
         $this->email = $args['email'] ?? '';
         $this->telefono = $args['telefono'] ?? '';
         $this->servicio = $args['servicio'] ?? '';
+        $this->precio = $args['precio'] ?? '';
     }
 }

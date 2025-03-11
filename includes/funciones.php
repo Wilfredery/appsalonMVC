@@ -26,3 +26,13 @@ function isSession() : void {
         session_start();
     }
 }
+
+function esUltimo(string $actual, string $proximo): bool {
+    //Si el valor actual es diferente al proximo significa que es el ultimo.
+
+    if($actual != $proximo) { 
+        return true;
+    }
+
+    return false;
+}

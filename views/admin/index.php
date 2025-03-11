@@ -9,7 +9,7 @@
     <form class="formulario" action="">
         <div class="campo">
             <label for="fecha">Fecha: </label>
-            <input type="date" id="fecha" name="fecha">
+            <input type="date" id="fecha" value=<?php echo $fecha; ?> name="fecha">
         </div>
     </form>
 </div>
@@ -20,9 +20,9 @@
     <?php
     $idCita = 0;
 
-    foreach($citas as $cita) { 
+    foreach($citas as $key => $cita) { 
         if($idCita !== $cita->id) {  
-            
+            $total = 0;
     ?>
         <li>
             <p>ID: <span><?php echo $cita->id; ?></span></p>
@@ -31,8 +31,23 @@
             <p>email cliente: <span><?php echo $cita->email; ?></span></p>
             <p>telefono cliente: <span><?php echo $cita->telefono; ?></span></p>
             <h3>Servicios seleccionados</h3>
-            <?php $idCita = $cita->id; } //fin if ?>
-            <p class="servicio"><?php echo $cita->servicio; ?></p>
+
+            <?php 
+            
+                $idCita = $cita->id; } //fin if 
+                $total += $cita->precio;
+
+            ?>
+            <p class="servicio"><?php echo $cita->servicio. " - ". $cita->precio; ?></p>
+        <?php 
+        
+        $actual = $cita->id; //Retorna el id donde estamos
+        $proximo = $citas[$key + 1]->id ?? 0; //Indice en el arreglo de la DB. Si marca undifined es porque llego al ultimo asi que coloco un 0.
+
+        if(esUltimo($actual, $proximo)) { ?>
+            <p class="total">Total: $<span><?php echo $total; ?></span></p>
+
+        <?php } ?>
     <?php } //fin foreach ?>
     
     </ul>
