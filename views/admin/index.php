@@ -14,6 +14,14 @@
     </form>
 </div>
 
+<?php
+//Count cuenta un arreglo.
+    if(count($citas) === 0) {
+        echo "<h2 class='nombre-pagina'>No hay citas hechas en esta fecha.</h2>";
+    }
+
+?>
+
 <div id="citas-admin">
     <ul class="citas">
 
@@ -52,3 +60,9 @@
     
     </ul>
 </div>
+
+<?php
+
+$script = '<script src="build/js/buscador.js"></script>';
+
+?>
