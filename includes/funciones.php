@@ -36,3 +36,10 @@ function esUltimo(string $actual, string $proximo): bool {
 
     return false;
 }
+
+function isAdmin() : void {
+    if(!isset($_SESSION['administrador'])) {
+        
+        header('Location: /');
+    }
+}

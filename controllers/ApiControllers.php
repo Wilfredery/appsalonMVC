@@ -17,7 +17,6 @@ class ApiControllers {
         $resultado = $cita->guardar();
         $id = $resultado['id']; //Esto viene de la base de datos asi que no hay necesidad de escaparlo.
 
-
         //Almacena los servicios con el id de la cita
         $idServicios = explode(",", $_POST['servicios']); //Esto sirve para conv en arreglo y que separe con una coma(,) y el segundo parametro es cual quieres que se bregue
         
@@ -37,6 +36,19 @@ class ApiControllers {
         // ];
 
         echo json_encode(['resultado' => $resultado]);
+    }
+
+    public static function eliminar() {
+        
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+
+            $cita = Cita::find($id); //Instancia de la cita
+            $cita->eliminar();
+            header('Location:'. $_SERVER['HTTP_REFERER']);
+        }
+        
+        
     }
 }
 

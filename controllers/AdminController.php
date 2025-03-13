@@ -7,7 +7,7 @@ use MVC\Router;
 class AdminController {
     public static function index(Router $router) {
         isSession();
-
+        isAdmin();
         //El date() manda el dia actual del sv.
         $fecha = $_GET['fecha'] ?? date('Y-m-d');
         $fechas = explode('-', $fecha);
