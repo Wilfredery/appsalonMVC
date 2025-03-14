@@ -2,6 +2,8 @@
 <p class="descripcion-pagina">Llena todo los campos para agregar un nuevo servicio</p>
 
 <?php include_once __DIR__ . '/../templates/barra.php'; ?>
+<?php include_once __DIR__ . '/../templates/errores.php'; ?>
+
 
 <form action="/servicios/crear" method="POST" class="formulario">
 
