@@ -20,11 +20,11 @@ use PHPMailer\PHPMailer\PHPMailer;
             //Crear el objeto de email
             $mail = new PHPMailer();
             $mail->isSMTP();
-            $mail->Host = 'sandbox.smtp.mailtrap.io';
+            $mail->Host = $_ENV['EMAIL_HOST'];
             $mail->SMTPAuth = true;
-            $mail->Port = 2525;
-            $mail->Username = 'd5a8935c585bc4';
-            $mail->Password = '6c35b810746349';
+            $mail->Port = $_ENV['EMAIL_PORT'];
+            $mail->Username = $_ENV['EMAIL_USER'];
+            $mail->Password = $_ENV['EMAIL_PASS'];
 
             $mail->setFrom('cuenta@appsalon.com');
             $mail->addAddress('cuentas@appsalon.com', 'AppSalon.com');
@@ -36,7 +36,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 
             $contenido = "<html>";
             $contenido .= "<p>Hola <Strong>" .$this->nombre. "</strong> Has creado tu cuenta en App Salon, solo debes confirmarla presianando el siguiente enlace</p>";
-            $contenido .= "<p>Presiona aquí: <a href='http://localhost:3000/confirmar?token=". $this->token. "'>Confirmar Cuenta</a> </p>";
+            $contenido .= "<p>Presiona aquí: <a href='".$_ENV['PROJECT_URL']."/confirmar?token=". $this->token. "'>Confirmar Cuenta</a> </p>";
             $contenido .= "<p>Ignotar el mensaje si no solicitaste este mensaje.</p>";
             $contenido .= "</html>";
 
@@ -50,11 +50,11 @@ use PHPMailer\PHPMailer\PHPMailer;
             //Crear el objeto de email
             $mail = new PHPMailer();
             $mail->isSMTP();
-            $mail->Host = 'sandbox.smtp.mailtrap.io';
+            $mail->Host = $_ENV['EMAIL_HOST'];
             $mail->SMTPAuth = true;
-            $mail->Port = 2525;
-            $mail->Username = 'd5a8935c585bc4';
-            $mail->Password = '6c35b810746349';
+            $mail->Port = $_ENV['EMAIL_PORT'];
+            $mail->Username = $_ENV['EMAIL_USER'];
+            $mail->Password = $_ENV['EMAIL_PASS'];
             
             $mail->setFrom('cuenta@appsalon.com');
             $mail->addAddress('cuentas@appsalon.com', 'AppSalon.com');
@@ -66,7 +66,7 @@ use PHPMailer\PHPMailer\PHPMailer;
             
             $contenido = "<html>";
             $contenido .= "<p>Hola <Strong>" .$this->nombre. "</strong> Haz solicitado restablecer tu password. Darle click al siguiente enlace.</p>";
-            $contenido .= "<p>Presiona aquí: <a href='http://localhost:3000/recuperar?token=". $this->token. "'>Reestablecer cuenta.</a> </p>";
+            $contenido .= "<p>Presiona aquí: <a href='".$_ENV['PROJECT_URL']."/recuperar?token=". $this->token. "'>Reestablecer cuenta.</a> </p>";
             $contenido .= "<p>Ignotar el mensaje si no solicitaste este mensaje.</p>";
             $contenido .= "</html>";
             
